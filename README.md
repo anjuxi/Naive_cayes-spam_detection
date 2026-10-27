@@ -1,117 +1,115 @@
-# 朴素贝叶斯-垃圾邮件识别
+# Naive Bayes Spam Detection
 
-本项目采用经典的朴素贝叶斯算法，通过统计邮件中单词的出现频率来判断邮件类别。项目包含完整的模型训练、评估和预测功能。
+A classic Naive Bayes classifier that labels email as spam or ham based on word frequencies. The project includes training, evaluation, and a few prediction examples.
 
-## 数据集
+## Dataset
 
-- **文件名**: `spam_ham_dataset.csv` 数据集来自：https://www.kaggle.com/datasets/venky73/spam-mails-dataset/data
-- **数据规模**: 5,171 封邮件
-  - 正常邮件 (ham): 3,672 封
-  - 垃圾邮件 (spam): 1,499 封
-- **数据字段**:
-  - `label`: 邮件标签（ham/spam）
-  - `text`: 邮件正文内容
-  - `label_num`: 数字标签（0=ham, 1=spam）
+- **File**: `spam_ham_dataset.csv`, from https://www.kaggle.com/datasets/venky73/spam-mails-dataset/data
+- **Size**: 5,171 emails
+  - Ham: 3,672
+  - Spam: 1,499
+- **Fields**:
+  - `label`: email label (ham/spam)
+  - `text`: email body
+  - `label_num`: numeric label (0=ham, 1=spam)
 
-## 技术实现
+## Implementation
 
-### 核心算法
+### Core Algorithm
 
-**朴素贝叶斯分类器** (Naive Bayes Classifier)
+**Naive Bayes classifier**
 
-- 基于贝叶斯定理计算后验概率
-- 假设特征（单词）之间相互独立
-- 使用拉普拉斯平滑处理未出现过的单词
-- 采用对数概率避免数值下溢
+- Computes posterior probabilities with Bayes' theorem
+- Assumes features (words) are independent
+- Uses Laplace smoothing for unseen words
+- Uses log probabilities to avoid numerical underflow
 
-### 文本预处理
+### Text Preprocessing
 
-1. 转换为小写字母
-2. 移除非字母字符
-3. 分词处理
-4. 过滤短词（长度≤2）
+1. Lowercase
+2. Remove non-letter characters
+3. Tokenize
+4. Drop short tokens (length ≤ 2)
 
-### 关键技术点
+### Key Techniques
 
-| 技术         | 说明                                     |
+| Technique | Notes |
 | ------------ | ---------------------------------------- |
-| 拉普拉斯平滑 | 处理训练集中未出现的单词，避免零概率问题 |
-| 对数概率     | 防止多个小概率相乘导致的数值下溢         |
-| 先验概率     | 基于训练集中垃圾邮件/正常邮件的比例      |
+| Laplace smoothing | Handles words not seen in training, avoids zero probabilities |
+| Log probabilities | Prevents underflow from multiplying many small probabilities |
+| Priors | Based on the spam/ham ratio in the training set |
 
-## 项目结构
+## Project Structure
 
 ```
-垃圾邮件识别/
-├── spam_ham_dataset.csv      # 数据集
-├── naive_bayes_spam.ipynb    # Jupyter Notebook 主程序
-├── LICENSE                   # 协议
-└── README.md                 # 项目说明文档
+spam_detection/
+├── spam_ham_dataset.csv      # dataset
+├── naive_bayes_spam.ipynb    # main notebook
+├── LICENSE                   # license
+└── README.md                 # this file
 ```
 
-## 使用方法
-
-### 运行方式
+## Usage
 
 ```bash
 jupyter notebook naive_bayes_spam.ipynb
 ```
 
-## 模型性能
+## Performance
 
-使用 80/20 训练测试集分割，模型评估结果如下：
+With an 80/20 train/test split:
 
-| 指标               | 数值       |
+| Metric | Value |
 | ------------------ | ---------- |
-| 准确率 (Accuracy)  | **98.07%** |
-| 精确率 (Precision) | **96.27%** |
-| 召回率 (Recall)    | **96.93%** |
-| F1分数 (F1-Score)  | **96.60%** |
+| Accuracy | **98.07%** |
+| Precision | **96.27%** |
+| Recall | **96.93%** |
+| F1 score | **96.60%** |
 
-## 测试示例
+## Example Predictions
 
-项目包含4个测试邮件示例：
+The project includes four sample emails:
 
-| 邮件内容                                             | 预测结果   |
+| Email content | Prediction |
 | ---------------------------------------------------- | ---------- |
-| "Congratulations! You have won a $1000 gift card..." | 垃圾邮件 ✓ |
-| "Meeting schedule for next week..."                  | 正常邮件 ✓ |
-| "Get rich quick! Buy cheap viagra now!!!"            | 垃圾邮件 ✓ |
-| "Project update - Q3 financial report..."            | 正常邮件 ✓ |
+| "Congratulations! You have won a $1000 gift card..." | Spam ✓ |
+| "Meeting schedule for next week..." | Ham ✓ |
+| "Get rich quick! Buy cheap viagra now!!!" | Spam ✓ |
+| "Project update - Q3 financial report..." | Ham ✓ |
 
-## 算法原理
+## How It Works
 
-朴素贝叶斯分类器基于贝叶斯定理：
-
-```
-P(类别|文档) = P(文档|类别) × P(类别)/P(文档)
-```
-
-其中：
-
-- **先验概率** P(类别)：训练集中各类别的比例
-- **似然** P(文档|类别)：给定类别下文档出现的概率
-- **后验概率** P(类别|文档)：文档属于某类别的概率
-
-由于假设单词独立，文档概率可分解为单词概率的乘积：
+Naive Bayes is based on Bayes' theorem:
 
 ```
-P(文档|类别) = ∏ P(单词|类别)
+P(class|doc) = P(doc|class) × P(class) / P(doc)
 ```
 
-## 许可证
+Where:
+
+- **Prior** P(class): the proportion of each class in the training set
+- **Likelihood** P(doc|class): the probability of the document given the class
+- **Posterior** P(class|doc): the probability that the document belongs to the class
+
+Assuming word independence, the document probability factors into a product of word probabilities:
+
+```
+P(doc|class) = ∏ P(word|class)
+```
+
+## License
 
 **MIT**
 
 ---
 
-## 作者信息
+## Author
 
-**谙弆悕博士（Ailan Anjuxi）**
+**Dr. Ailan Anjuxi (谙弆悕)**
 
-- **邮箱**: anjuxi.ME@outlook.com
-- **SIP电话**: sip:anjuxi@sip.linphone.org
+- **Email**: anjuxi.ME@outlook.com
+- **SIP**: sip:anjuxi@sip.linphone.org
 
 ---
 
-*本项目展示了朴素贝叶斯算法在文本分类任务中的经典应用，适合作为机器学习入门学习材料。*
+*A classic application of Naive Bayes to text classification. Suitable as an introductory machine learning example.*
